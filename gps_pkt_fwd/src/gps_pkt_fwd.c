@@ -249,6 +249,13 @@ static int parse_SX1301_configuration(const char * conf_file) {
 		MSG("WARNING: Data type for lorawan_public seems wrong, please check\n");
 		boardconf.lorawan_public = false;
 	}
+	val = json_object_get_value(conf_obj, "lora_direct"); /* fetch value (if possible) */
+	if (json_value_get_type(val) == JSONBoolean) {
+		boardconf.lora_direct = (bool)json_value_get_boolean(val);
+	} else {
+		MSG("WARNING: Data type for lora_direct seems wrong, please check\n");
+		boardconf.lora_direct = false;
+	}
 	val = json_object_get_value(conf_obj, "clksrc"); /* fetch value (if possible) */
 	if (json_value_get_type(val) == JSONNumber) {
 		boardconf.clksrc = (uint8_t)json_value_get_number(val);
@@ -256,7 +263,7 @@ static int parse_SX1301_configuration(const char * conf_file) {
 		MSG("WARNING: Data type for clksrc seems wrong, please check\n");
 		boardconf.clksrc = 0;
 	}
-	MSG("INFO: lorawan_public %d, clksrc %d\n", boardconf.lorawan_public, boardconf.clksrc);
+	MSG("INFO: lorawan_public %d, clksrc %d, lora_direct %d\n", boardconf.lorawan_public, boardconf.clksrc, boardconf.lora_direct);
 	/* all parameters parsed, submitting configuration to the HAL */
         if (lgw_board_setconf(boardconf) != LGW_HAL_SUCCESS) {
                 MSG("WARNING: Failed to configure board\n");
